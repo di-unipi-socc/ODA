@@ -40,10 +40,12 @@ kafka_internal_port: the port where the Kafka broker will be listening for inter
 k_admin_port: the port where the Kafka Admin will be listening.
 ```
 
-Only the 'api_gateway_port', 'kafka_address' and the 'kafka_port' are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
-By default, we provide development configuration values.
+Only the ```api_gateway_port```, ```kafka_address``` and the ```kafka_port``` are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
+By default, we provide development configuration values (see ```.env``` file).
+
 2. The influxdb database.
-This configuration is achieved through environment variables, which are defined in the `influx.env` file located at the root directory of the repository. Follow [InfluxDB documentation](https://docs.influxdata.com/influxdb/v1/administration/config/) to configure the database. By default, we provide development configuration values not considerd safe for production.
+
+This configuration is achieved through environment variables, which are defined in the `influx.env` file located at the root directory of the repository. Follow [InfluxDB documentation](https://docs.influxdata.com/influxdb/v1/administration/config/) to configure the database. By default, we provide development configuration values not considerd safe for production (see ```influx.env``` file).
 
 ## Installation and Execution
 
@@ -58,7 +60,7 @@ This configuration is achieved through environment variables, which are defined 
 ```docker-compose build```
 4. Run the Docker containers:
 
-```docker-compose up```
+```docker-compose start```
 
 ## API
 
