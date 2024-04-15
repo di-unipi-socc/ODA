@@ -1,0 +1,109 @@
+version: '3.3'
+name: oda
+
+services:
+
+  zookeeper:
+    container_name: zookeeper
+    image: alebocci/odakafka
+    command: [
+        "sh", "-c",
+        "bin/zookeeper-server-start.sh config/zookeeper.properties"
+      ]
+    ports:
+    - "2181:2181"
+    environment:
+      LOG_DIR: /tmp/logs
+
+  kafka:
+    container_name: kafka
+    image: alebocci/odakafka
+    command: [
+      "sh", "-c",
+      "bin/kafka-server-start.sh config/server.properties --override auto.create.topics.enable=false --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override inter.broker.listener.name=$${KAFKA_INTER_BROKER_LISTENER_NAME} --override listener.security.protocol.map=$${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP}"
+    ]
+    depends_on:
+    - zookeeper
+    ports:
+    - 9092:9092
+    - ${kafka_port}:9094
+    environment:
+      LOG_DIR: "/tmp/logs"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:9092,OUTSIDE://0.0.0.0:9094
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:9092,OUTSIDE://${kafka_address}:${kafka_port}
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    env_file:
+      - influx.env
+    volumes:
+      - influxdbvol:/var/lib/influxdb2:rw
+    ports:
+      - ${db_port}:8086
+
+  dbmanager:
+    build: 
+      context: ./db_manager
+      args:
+        DB_MANAGER_PORT: ${db_manager_port}
+    container_name: dbmanager
+    ports:
+      - ${db_manager_port}:${db_manager_port}
+    env_file:
+      - influx.env
+    environment: 
+      DB_PORT: ${db_port}
+    depends_on:
+      - influxdb
+
+  kadminservice:
+    build:
+      context: ./k_admin
+      args:
+        K_ADMIN_PORT: ${k_admin_port}
+    container_name: kadminservice
+    ports:
+      - ${k_admin_port}:${k_admin_port}
+    environment: 
+      KAFKA_INTERNAL_PORT: ${kafka_internal_port}
+    depends_on:
+      - kafka
+      - dbmanager
+
+  dataharvester:
+    build: ./data_harvester
+    container_name: dataharvester
+    environment: 
+      KAFKA_INTERNAL_PORT: ${kafka_internal_port}
+      DB_MANAGER_PORT: ${db_manager_port}
+    depends_on:
+      - kafka
+      - dbmanager
+    
+  apigateway:
+    build: 
+      context: ./api_gateway
+      args:
+        API_GATEWAY_PORT: ${api_gateway_port}
+    container_name: apigateway
+    ports:
+      - ${api_gateway_port}:${api_gateway_port}
+    environment:
+      API_GATEWAY_PORT: ${api_gateway_port}
+      KAFKA_PORT: ${kafka_port}
+      KAFKA_ADDRESS: ${kafka_address}
+      DB_MANAGER_PORT: ${db_manager_port}
+      K_ADMIN_PORT: ${k_admin_port}
+    
+    depends_on:
+      - dataharvester
+      - kadminservice
+
+volumes:
+  influxdbvol:
+
+#curl -X POST http://localhost:50005/query  -H 'Content-Type: application/json' -d '{"topic":"attico"}'

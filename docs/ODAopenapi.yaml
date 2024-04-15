@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  title: ODA API Gateway
+  description: |-
+   This is the API to interact with the ODA service for Data Generators and Data C
+   
+  #termsOfService: http://swagger.io/terms/
+  #contact:
+  #  email: apiteam@swagger.io
+  #license:
+  #  name: Apache 2.0
+  #  url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about ODA
+  url: http://odalink
+tags:
+  - name: registration
+    description: Register your Consumer or Generator within ODA.
+  - name: query
+    description: Query the data stored in ODA.
+paths:
+  /register/dc:
+    get:
+      tags:
+        - registration
+      summary: Register your Data Consumer
+      description: Obtain the Kafka endpoint and the list of topics available to consume the data sent to ODA.
+      operationId: registerDC
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  KAFKA_ENDPOINT:
+                    type: string
+                    description: Kafka broker endpoint
+                    example: "127.0.0.1:9092"
+                  topics:
+                    type: array
+                    description: List of Kafka topics
+                    items:
+                      type: string
+                      example: topic1    
+        '500':
+          description: Internal server error
+  /register/dg:
+    post:
+      tags:
+        - registration
+      summary: Register your Data Generator
+      description: Obtain the Kafka endpoint and declare the list of topics which will be used when sending data to ODA.
+      operationId: registerDG
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topics:
+                  type: array
+                  description: List of Kafka topics
+                  items:
+                    type: string
+                    example: topic1
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  KAFKA_ENDPOINT:
+                    type: string
+                    description: Kafka broker endpoint
+                    example: "127.0.0.1:9092"
+        '500':
+          description: Internal server error
+  /query:
+    post:
+      tags:
+        - query
+      summary: Query data from ODA
+      description: Obtain historical data stored in the ODA service.
+      operationId: query
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+              properties:
+                start:
+                  type: string
+                  format: date-time
+                  description: Start time of the event in ISO 8601 format
+                  example: "2024-04-11T08:00:00Z"
+                stop:
+                  type: string
+                  format: date-time
+                  description: Stop time of the event in ISO 8601 format
+                  example: "2024-04-11T09:00:00Z"
+                topic:
+                  type: string
+                  description: Kafka topic related to the event
+                  example: "topic1"
+                generator_id:
+                  type: string
+                  description: ID of the event generator
+                  example: "generator123"
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/gzip:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                      format: date-time
+                      description: Timestamp of the event in ISO 8601 format
+                      example: "2024-04-11T10:01:56.000Z"
+                    data:
+                      type: string
+                      description: JSON data containing event details
+                      example: '{"Air temperature indoor": {"value": 20, "unit": "C"}, "Illuminance": {"value": 714, "unit": "Lux"}, "CO2 concentration": {"value": 864, "unit": "ppm"}, "Movement/presence": {"value": 1, "unit": "0/1"}}'
+                    topic:
+                      type: string
+                      description: Kafka topic related to the event
+                      example: "generic_topic"
+                    generator_id:
+                      type: string
+                      description: ID of the event generator
+                      example: "generic_generator"
+        '500':
+          description: Internal server error
