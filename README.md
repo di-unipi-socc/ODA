@@ -1,6 +1,22 @@
-# ODA
+# ODA - Observable Data Access
+
+Observable Data Access service developed within NEST Project, Task 8.6.2.
+
+## Overview
+
 ![ODA Architecture](docs/ODA.png)
-Observable Data Access service developed within NEST, Task 8.6.2
+
+The Observable Data Access (ODA) service is a microservice-based architecture that allows Data Generators to send data to the service and Data Consumers to query the data stored in the service. The service is composed of the following microservices:
+
+1. API Gateway: the entry point of the service. It provides the Kafka endpoint to Data Generators and Data Consumers and manages the registration of the topics. It also provides the query endpoint to Data Consumers.
+2. Database Manager: the microservice that manages the InfluxDB database. It stores the data sent by the Data Generators and provides the data to the Data Consumers.
+3. InfluxDB: the time-series database that stores the data sent by the Data Generators.
+4. Kafka: the message broker that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
+5. Zookeeper: the service that manages the Kafka cluster.
+6. Data Harvester: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
+7. Kafka Admin: the microservice that manages the Kafka topics registered in ODA.
+
+The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 
 ## Prerequisites
 
