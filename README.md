@@ -1,5 +1,5 @@
 # ODA
-
+![ODA Architecture](docs/ODA.png)
 Observable Data Access service developed within NEST, Task 8.6.2
 
 ## Prerequisites

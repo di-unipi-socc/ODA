@@ -63,8 +63,6 @@ To run the Data Consumer, navigate to the `example` folder and run the following
 ```ODA_DC.py [-h] [--register REGISTER] [--apigateway APIGATEWAY] [--timeout TIMEOUT]
                  topics [topics ...]
 
-Data consumer for and ODA service.
-
 positional arguments:
   topics                List of topic names to subscribe to
 
