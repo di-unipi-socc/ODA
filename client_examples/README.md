@@ -12,7 +12,8 @@ To run the Data Generator, navigate to the `example` folder and run the followin
 
 ```python ODA_DG.py``` with the following options:
 
-```ODA_DG.py [-h] [--number_of_msg NUMBER_OF_MSG] [--registered REGISTERED] [--apigateway APIGATEWAY]
+```bash
+ODA_DG.py [-h] [--number_of_msg NUMBER_OF_MSG] [--registered REGISTERED] [--apigateway APIGATEWAY]
                  [--data DATA] [--topic TOPIC] [--generator_id GENERATOR_ID] [--timestamp TIMESTAMP]
                  [--topics [TOPICS ...]] [--timeout TIMEOUT]
 
@@ -34,17 +35,20 @@ options:
   --topics [TOPICS ...], -tps [TOPICS ...]
                         List of topic names to subscribe to, default: "generic_topic"
   --timeout TIMEOUT, -t TIMEOUT
-                        Set the sending packet in timeout in seconds, default: 0```
+                        Set the sending packet in timeout in seconds, default: 0
+```
 
 ### Example: sending a message
 
 ```python ODA_DG.py -tp livingroom -d "{'temperature': 25, 'humidity': 50}" -g livingroom_termometer```
-will register to the API Gateway with the topic `livingroom` and will send a message 
+will register to the API Gateway with the topic `livingroom` and will send the message:
+
 ```json
 "timestamp": <current time>,
 "generator_id": "livingroom_termometer",
 "topic": "livingroom",
 "data": "{'temperature': 25, 'humidity': 50}",
+```
 
 ### Example: sending generated messages
 
@@ -77,4 +81,3 @@ options:
 ### Example: receiving messages
 
 ```python ODA_DC.py livingroom kitchen``` will register to the API Gateway with the topics `livingroom` and `kitchen` and will print the messages received from those topics. The program will run until the user stops it with a keyboard interrupt.
-
