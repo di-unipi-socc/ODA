@@ -35,7 +35,7 @@ This configuration is achieved through environment variables, which are defined 
 db_port: the port where the InfluxDB will be listening.
 db_manager_port: the port where the database manager will be listening.
 kafka_address: the address of the Kafka broker.
-kafka_port: the port where the Kafka broker will be listening for outside connection.
+kafka_port: the port where the Kafka broker will be listening for an outside connection.
 kafka_internal_port: the port where the Kafka broker will be listening for internal connection.
 k_admin_port: the port where the Kafka Admin will be listening.
 ```
@@ -45,12 +45,12 @@ By default, we provide development configuration values (see ```.env``` file).
 
 2. The InfluxDB database configuration.
 
-This configuration is achieved through environment variables, which are defined in the `influx.env` file located at the root directory of the repository. Follow [InfluxDB documentation](https://docs.influxdata.com/influxdb/v1/administration/config/) to configure the database. By default, we provide development configuration values not considerd safe for production (see ```influx.env``` file).
+This configuration is achieved through environment variables, which are defined in the `influx.env` file located at the root directory of the repository. Follow [InfluxDB documentation](https://docs.influxdata.com/influxdb/v1/administration/config/) to configure the database. By default, we provide development configuration values not considered safe for production (see ```influx.env``` file).
 
 ## Installation and Execution
 
 1. Clone the repository:
-```git clone [repository]```
+```git clone [this repository]```
 
 2. Navigate to the repository:
 ```cd ODA```
@@ -68,32 +68,32 @@ The API of the API Gateway is documented using [Swagger](https://petstore.swagge
 
 Data Generators must send the list of topics they want to produce to the API Gateway. Data Consumers will obtain the list of available topics from the API Gateway.
 
-To send or received stremed data, Data Generators and Data Consumers must use the Kafka endpoint provided by the API Gateway and a Kafka client following the [Kafka documentation](https://docs.confluent.io/kafka-client/overview.html). We provide two Python example in the [client_examples folder](/client_examples).
+To send or receive streamed data, Data Generators and Data Consumers must use the Kafka endpoint provided by the API Gateway and a Kafka client following the [Kafka documentation](https://docs.confluent.io/kafka-client/overview.html). We provide two Python examples in the [client_examples folder](/client_examples).
 
 The data format of the data streamed or stored in ODA is JSON. The messages must include the following fields:
 
 ``` "timestamp": string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ,
-    "generator_id": string representing the ID of the generator,
-    "topic": string representing the topic where the message will be sent,
-    "data": sting representing the data of the message.
+    "generator_id": a string representing the ID of the generator,
+    "topic": a string representing the topic where the message will be sent,
+    "data": a string representing the data of the message.
 ```
 
 To query the data stored in ODA, Data Consumers must send a query to the API Gateway. The query must include at least one of the following fields:
 
 ``` "generator_id": string representing the ID of the generator,
-    "topic": string representing the topic of the data requested,
-    "start": string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the timewindow start of the query,
-    "end": string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the timewindow end of the query.
+    "topic": a string representing the topic of the data requested,
+    "start": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window start of the query,
+    "end": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window end of the query.
 ```
 
 The response will contain a ```.gzip``` file containing the JSON representing the requested data.
 
 ## Warnings
 
-1. When stopping ODA with ```docker compose stop``` or a SIGINT, to restart the service it is necessary to use ```docker-compose restart``` otherwise Kafka will not start correctly. Alternatively, you can use ```docker-compose down``` to stop the service and ```docker-compose up``` to start it again. In evey case, the data stored in InfluxDB will _not_ be lost.
+1. When stopping ODA with ```docker compose stop``` or a SIGINT, to restart the service it is necessary to use ```docker-compose restart``` otherwise Kafka will not start correctly. Alternatively, you can use ```docker-compose down``` to stop the service and ```docker-compose up``` to start it again. In every case, the data stored in InfluxDB will _not_ be lost.
 
 2. Security: for development purposes, we do not provide cryptography and authentication mechanisms.
 
-3. The database is not automatically cleaned, it will grow indefinitely. To clean the database, docker volume of the InfluxDB container must be removed.
+3. The database is not automatically cleaned, it will grow indefinitely. To clean the database, the docker volume of the InfluxDB container must be removed.
 
-4. The polling time of the Data Harvester is set to 10 seconds, meaning that the data will be polled from Kafka and stored in the database every 10 seconds. The subscription to the Kafka topics timeout is set to 60 seconds, meaning that the Data Harvester will check the existing topics every 60 seconds and it will register to them.
+4. The polling time of the Data Harvester is set to 10 seconds, meaning that the data will be polled from Kafka and stored in the database every 10 seconds. The subscription to the Kafka topics timeout is set to 60 seconds, meaning that the Data Harvester will check the existing topics every 60 seconds and it will subscribe to them.
