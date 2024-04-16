@@ -27,18 +27,23 @@ The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 To run the ODA service with default configuration, follow these steps:
 
 1. Clone the repository:
+
 ```git clone https://github.com/di-unipi-socc/ODA.git```
 
 2. Navigate to the repository:
+
 ```cd ODA```
 
 3. Build and Run ODA:
+
 ```./start.sh```
 
 4. Stop ODA:
+
 ```./stop.sh```
 
 5. Remove ODA:
+
 ```./clean.sh```    to remove the Docker images and the Docker network.
 ```./clean.sh -v``` to remove the Docker images, the Docker network and the db volumes (deleting all db data).
 
