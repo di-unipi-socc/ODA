@@ -11,10 +11,9 @@ The Observable Data Access (ODA) service is a microservice-based architecture th
 1. API Gateway: the entry point of the service. It provides the Kafka endpoint to Data Generators and Data Consumers and manages the registration of the topics. It also provides the query endpoint to Data Consumers.
 2. Database Manager: the microservice that manages the InfluxDB database. It stores the data sent by the Data Generators and provides the data to the Data Consumers.
 3. InfluxDB: the time-series database that stores the data sent by the Data Generators.
-4. Kafka: the message broker that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
-5. Zookeeper: the service that manages the Kafka cluster.
-6. Data Harvester: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
-7. Kafka Admin: the microservice that manages the Kafka topics registered in ODA.
+4. Kafka: the message broker - managed by Zookeper - that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
+5. Data Harvester: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
+6. Kafka Admin: the microservice that manages the Kafka topics registered in ODA.
 
 The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 
@@ -23,43 +22,21 @@ The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 * ODA is versioned using [Git](https://git-scm.com/). To clone the repository, you need to have Git installed on the target machine.
 * ODA is shipped using [Docker](https://www.docker.com/) and deployed using [Docker Compose](https://docs.docker.com/compose/). To run the service, you need to have Docker and Docker Compose installed on the target machine.
 
-## Configuration
+## Quick start
 
-The ODA service needs two things to be configured:
-
-1. The ports of every microservice composing ODA and the Kafka endpoint.
-
-This configuration is achieved through environment variables, which are defined in the `.env` file located at the root directory of the repository. The `.env` file should include the following environment variables:
-
-```api_gateway_port: the port where the API Gateway will be listening.
-db_port: the port where the InfluxDB will be listening.
-db_manager_port: the port where the database manager will be listening.
-kafka_address: the address of the Kafka broker.
-kafka_port: the port where the Kafka broker will be listening for an outside connection.
-kafka_internal_port: the port where the Kafka broker will be listening for internal connection.
-k_admin_port: the port where the Kafka Admin will be listening.
-```
-
-Only the ```api_gateway_port```, ```kafka_address``` and the ```kafka_port``` are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
-By default, we provide development configuration values (see ```.env``` file).
-
-2. The InfluxDB database configuration.
-
-This configuration is achieved through environment variables, which are defined in the `influx.env` file located at the root directory of the repository. Follow [InfluxDB documentation](https://docs.influxdata.com/influxdb/v1/administration/config/) to configure the database. By default, we provide development configuration values not considered safe for production (see ```influx.env``` file).
-
-## Installation and Execution
+To run the ODA service with default configuration, follow these steps:
 
 1. Clone the repository:
-```git clone [this repository]```
+```git clone https://github.com/di-unipi-socc/ODA.git```
 
 2. Navigate to the repository:
 ```cd ODA```
 
-3. Build the Docker images:
-```docker-compose build```
+3. Build and Run ODA:
+```./start.sh```
 
-4. Run the Docker containers:
-```docker-compose start```
+4. Stop ODA:
+```./stop.sh```
 
 ## API
 
@@ -88,7 +65,30 @@ To query the data stored in ODA, Data Consumers must send a query to the API Gat
 
 The response will contain a ```.gzip``` file containing the JSON representing the requested data.
 
-## Warnings
+## Configuration
+
+The ODA service can be configured in two aspects:
+
+1. The ports of every microservice composing ODA and the Kafka endpoint.
+
+This configuration is achieved through environment variables, which are defined in the `.env` file located at the root directory of the repository. The `.env` file should include the following environment variables:
+
+    - api_gateway_port: the port where the API Gateway will be listening.
+    - db_port: the port where the InfluxDB will be listening.
+    - db_manager_port: the port where the database manager will be listening.
+    - kafka_address: the address of the Kafka broker.
+    - kafka_port: the port where the Kafka broker will be listening for an outside connection.
+    - kafka_internal_port: the port where the Kafka broker will be listening for internal connection.
+    - k_admin_port: the port where the Kafka Admin will be listening.
+
+Only the ```api_gateway_port```, ```kafka_address``` and the ```kafka_port``` are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
+By default, we provide development configuration values (see ```.env``` file).
+
+2. The InfluxDB database configuration.
+
+This configuration is achieved through environment variables, which are defined in the `influx.env` file located at the root directory of the repository. Follow [InfluxDB documentation](https://docs.influxdata.com/influxdb/v1/administration/config/) to configure the database. By default, we provide development configuration values not considered safe for production (see ```influx.env``` file).
+
+## Possible issues
 
 1. When stopping ODA with ```docker compose stop``` or a SIGINT, to restart the service it is necessary to use ```docker-compose restart``` otherwise Kafka will not start correctly. Alternatively, you can use ```docker-compose down``` to stop the service and ```docker-compose up``` to start it again. In every case, the data stored in InfluxDB will _not_ be lost.
 

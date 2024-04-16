@@ -1,0 +1,9 @@
+FROM arm64v8/python:latest
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip3 install -r requirements.txt --no-cache-dir
+
+CMD ["python3", "data_harvester.py"]

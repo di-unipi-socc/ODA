@@ -1,0 +1,14 @@
+FROM arm64v8/python:latest
+
+ARG K_ADMIN_PORT
+ENV SERVER_PORT="0.0.0.0:$K_ADMIN_PORT"
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip3 install -r requirements.txt --no-cache-dir
+
+EXPOSE $K_ADMIN_PORT
+
+CMD gunicorn -k gevent --bind ${SERVER_PORT} k_admin:app
