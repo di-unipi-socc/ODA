@@ -10,8 +10,8 @@ KAFKA_ADDRESS= os.environ["KAFKA_ADDRESS"]
 DB_MANAGER_URL = "http://dbmanager:"+DB_MANAGER_PORT
 KAFKA_URL = KAFKA_ADDRESS+":"+KAFKA_PORT
 
-K_ADMIN_PORT= os.environ["K_ADMIN_PORT"]
-K_ADMIN_URL = "http://kadminservice:"+K_ADMIN_PORT
+TOPIC_MANAGER_PORT= os.environ["TOPIC_MANAGER_PORT"]
+TOPIC_MANAGER_URL = "http://topicmanager:"+TOPIC_MANAGER_PORT
 
 app = Flask(__name__)
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -59,7 +59,7 @@ def query():
 @app.route("/register/dc", methods=["GET"]) 
 def register_dc():
     try:
-        URL= K_ADMIN_URL + '/topics'
+        URL= TOPIC_MANAGER_URL + '/topics'
         app.logger.info(f"Asking for topics to {URL}")
         x = requests.get(URL)
         x.raise_for_status()
@@ -80,7 +80,7 @@ def register_dg():
         msg = request.get_json()
         if not msg:
             return make_response("Empty Registration", 400)
-        URL= K_ADMIN_URL + '/register'
+        URL= TOPIC_MANAGER_URL + '/register'
         app.logger.info(f"Sending registration to {URL}")
         app.logger.info(f"Registration topics: {msg}")
         x = requests.post(URL, json=msg)

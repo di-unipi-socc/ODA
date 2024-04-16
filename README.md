@@ -12,8 +12,8 @@ The Observable Data Access (ODA) service is a microservice-based architecture th
 2. Database Manager: the microservice that manages the InfluxDB database. It stores the data sent by the Data Generators and provides the data to the Data Consumers.
 3. InfluxDB: the time-series database that stores the data sent by the Data Generators.
 4. Kafka: the message broker - managed by Zookeper - that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
-5. Data Harvester: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
-6. Kafka Admin: the microservice that manages the Kafka topics registered in ODA.
+5. Data Pump: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
+6. Topic Manager: the microservice that manages the Kafka topics registered in ODA.
 
 The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 
@@ -37,6 +37,10 @@ To run the ODA service with default configuration, follow these steps:
 
 4. Stop ODA:
 ```./stop.sh```
+
+5. Remove ODA:
+```./clean.sh```    to remove the Docker images and the Docker network.
+```./clean.sh -v``` to remove the Docker images, the Docker network and the db volumes (deleting all db data).
 
 ## API
 
@@ -94,6 +98,6 @@ This configuration is achieved through environment variables, which are defined 
 
 2. Security: for development purposes, we do not provide cryptography and authentication mechanisms.
 
-3. The database is not automatically cleaned, it will grow indefinitely. To clean the database, the docker volume of the InfluxDB container must be removed.
+3. The database is not automatically cleaned, it will grow indefinitely. To clean the database, use the command ```./clean.sh -v```.
 
-4. The polling time of the Data Harvester is set to 10 seconds, meaning that the data will be polled from Kafka and stored in the database every 10 seconds. The subscription to the Kafka topics timeout is set to 60 seconds, meaning that the Data Harvester will check the existing topics every 60 seconds and it will subscribe to them.
+4. The polling time of the Data Pump is set to 10 seconds, meaning that the data will be polled from Kafka and stored in the database every 10 seconds. The subscription to the Kafka topics timeout is set to 60 seconds, meaning that the Data Harvester will check the existing topics every 60 seconds and it will subscribe to them.

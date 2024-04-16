@@ -1,0 +1,14 @@
+FROM arm64v8/python:latest
+
+ARG TOPIC_MANAGER_PORT
+ENV SERVER_PORT="0.0.0.0:$TOPIC_MANAGER_PORT"
+
+WORKDIR /app
+
+COPY . .
+
+RUN pip3 install -r requirements.txt --no-cache-dir
+
+EXPOSE $TOPIC_MANAGER_PORT
+
+CMD gunicorn -k gevent --bind ${SERVER_PORT} topic_manager:app

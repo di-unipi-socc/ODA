@@ -41,7 +41,8 @@ services:
     env_file:
       - influx.env
     volumes:
-      - influxdbvol:/var/lib/influxdb2:rw
+      - influxdbdata:/var/lib/influxdb2:rw
+      - influxdbconfig:/etc/influxdb2:rw
     ports:
       - ${db_port}:8086
 
@@ -60,26 +61,25 @@ services:
     depends_on:
       - influxdb
 
-  kadminservice:
+  topicmanager:
     build:
-      context: src/k_admin
-      dockerfile: DockerfileARM
+      context: src/topic_manager
       args:
-        K_ADMIN_PORT: ${k_admin_port}
-    container_name: kadminservice
+        TOPIC_MANAGER_PORT: ${topic_manager_port}
+    container_name: topicmanager
     ports:
-      - ${k_admin_port}:${k_admin_port}
+      - ${topic_manager_port}:${topic_manager_port}
     environment: 
       KAFKA_INTERNAL_PORT: ${kafka_internal_port}
     depends_on:
       - kafka
       - dbmanager
 
-  dataharvester:
+  datapump:
     build:
-      context: src/data_harvester
+      context: src/data_pump
       dockerfile: DockerfileARM
-    container_name: dataharvester
+    container_name: datapump
     environment: 
       KAFKA_INTERNAL_PORT: ${kafka_internal_port}
       DB_MANAGER_PORT: ${db_manager_port}
@@ -100,11 +100,12 @@ services:
       KAFKA_PORT: ${kafka_port}
       KAFKA_ADDRESS: ${kafka_address}
       DB_MANAGER_PORT: ${db_manager_port}
-      K_ADMIN_PORT: ${k_admin_port}
+      K_ADMIN_PORT: ${topic_manager_port}
     
     depends_on:
-      - dataharvester
-      - kadminservice
+      - datapump
+      - topicmanager
 
 volumes:
-  influxdbvol:
+  influxdbdata:
+  influxdbconfig:
