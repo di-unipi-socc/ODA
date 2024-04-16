@@ -1,0 +1,4 @@
+Flask
+influxdb_client
+gevent
+gunicorn

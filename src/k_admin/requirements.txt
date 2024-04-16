@@ -1,0 +1,5 @@
+Flask
+gevent
+gunicorn
+requests
+confluent-kafka

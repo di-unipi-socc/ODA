@@ -17,6 +17,8 @@ parser.add_argument('topics', type=str, nargs='+', help='List of topic names to 
 parser.add_argument('--register', '-r', help='Set the Kafka endpoint if registered previously')
 parser.add_argument('--apigateway', '-a', help='Set the API Gateway URL', default="http://127.0.0.1:50005")
 parser.add_argument('--timeout', '-t', help='Set the polling timeout', default=1)
+parser.add_argument('--group_id', '-g', help='Set the group id', default=GROUP_ID)
+parser.add_argument('--group_instance_id', '-gi', help='Set the group instance id', default=None)
 args = parser.parse_args()
 
 # Initialize variables from command-line arguments
