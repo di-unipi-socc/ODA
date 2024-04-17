@@ -5,10 +5,10 @@ Here we provide two examples of Data Generators and Data Consumers using Python.
 ## Prerequisites
 
 * Python 3.10 or higher.
-* Confluent Kafka Python module version 2.3.0 or higher. To install it, run the following command:
+* ```Confluent Kafka``` and ```requests``` Python modules. To install them, you can run the following command:
 
 ```bash
-pip install confluent_kafka
+pip install -r requirements.txt
 ```
 
 ## Data Generator
