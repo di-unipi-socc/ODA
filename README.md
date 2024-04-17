@@ -20,7 +20,7 @@ The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 ## Prerequisites
 
 * ODA is versioned using [Git](https://git-scm.com/). To clone the repository, you need to have Git installed on the target machine.
-* ODA is shipped using [Docker](https://www.docker.com/) and deployed using [Docker Compose](https://docs.docker.com/compose/). To run the service, you need to have Docker and Docker Compose installed on the target machine.
+* ODA is shipped using [Docker](https://www.docker.com/) and deployed using [Docker Compose](https://docs.docker.com/compose/). To run the service, you need Docker and Docker Compose installed and running on the target machine.
 
 ## Quick start
 
