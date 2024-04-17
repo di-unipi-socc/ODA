@@ -91,16 +91,8 @@ This configuration is achieved through environment variables, which are defined 
     - k_admin_port: the port where the Kafka Admin will be listening.
 
 Only the ```api_gateway_port```, ```kafka_address``` and the ```kafka_port``` are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
-By default, we provide development configuration values (see ```.env``` file).
+By default, we provide development configuration values (see ```.env``` file) to run ODA in localhost.
 
 2. The InfluxDB database configuration.
 
 This configuration is achieved through environment variables, which are defined in the `influx.env` file located at the root directory of the repository. Follow [InfluxDB documentation](https://docs.influxdata.com/influxdb/v1/administration/config/) to configure the database. By default, we provide development configuration values not considered safe for production (see ```influx.env``` file).
-
-## Possible issues
-
-1. Security: we do not provide cryptography and authentication mechanisms for development purposes.
-
-2. The database is not automatically cleaned, it will grow indefinitely. To clean the database, use the command ```./clean.sh -v```.
-
-3. The polling time of the Data Pump is set to 10 seconds, meaning that the data will be polled from Kafka and stored in the database every 10 seconds. The subscription to the Kafka topics timeout is set to 60 seconds, meaning that the Data Harvester will check the existing topics every 60 seconds and it will subscribe to them.

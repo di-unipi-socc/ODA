@@ -25,7 +25,7 @@ To run the Data Generator, navigate to the `example` folder and run the followin
 
 ```python ODA_DG.py``` with the following options:
 
-```bash
+```
 ODA_DG.py [-h] [--number_of_msg NUMBER_OF_MSG] [--registered REGISTERED] [--apigateway APIGATEWAY]
                  [--data DATA] [--topic TOPIC] [--generator_id GENERATOR_ID] [--timestamp TIMESTAMP]
                  [--topics [TOPICS ...]] [--timeout TIMEOUT]
@@ -56,7 +56,7 @@ options:
 ```python ODA_DG.py -tp livingroom -d "{'temperature': 25, 'humidity': 50}" -g livingroom_termometer```
 will register to the API Gateway with the topic `livingroom` and will send the message:
 
-```json
+```
 "timestamp": <current time>,
 "generator_id": "livingroom_termometer",
 "topic": "livingroom",
@@ -95,7 +95,8 @@ To run the Data Consumer, navigate to the `example` folder and run the following
 
 ```python ODA_DC.py``` with the following options:
 
-```ODA_DC.py [-h] [--register REGISTER] [--apigateway APIGATEWAY] [--timeout TIMEOUT]
+```
+ODA_DC.py [-h] [--register REGISTER] [--apigateway APIGATEWAY] [--timeout TIMEOUT]
                  [--group_id GROUP_ID] [--group_instance_id GROUP_INSTANCE_ID]
                  topics [topics ...]
 
