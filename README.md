@@ -11,7 +11,7 @@ The Observable Data Access (ODA) service is a microservice-based architecture th
 1. API Gateway: the entry point of the service. It provides the Kafka endpoint to Data Generators and Data Consumers and manages the registration of the topics. It also provides the query endpoint to Data Consumers.
 2. Database Manager: the microservice that manages the InfluxDB database. It stores the data sent by the Data Generators and provides the data to the Data Consumers.
 3. InfluxDB: the time-series database that stores the data sent by the Data Generators.
-4. Kafka: the message broker - managed by Zookeper - that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
+4. Kafka: the message broker - managed by Zookeeper - that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
 5. Data Pump: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
 6. Topic Manager: the microservice that manages the Kafka topics registered in ODA.
 
@@ -99,10 +99,8 @@ This configuration is achieved through environment variables, which are defined 
 
 ## Possible issues
 
-1. When stopping ODA with ```docker compose stop``` or a SIGINT, to restart the service it is necessary to use ```docker-compose restart``` otherwise Kafka will not start correctly. Alternatively, you can use ```docker-compose down``` to stop the service and ```docker-compose up``` to start it again. In every case, the data stored in InfluxDB will _not_ be lost.
+1. Security: we do not provide cryptography and authentication mechanisms for development purposes.
 
-2. Security: for development purposes, we do not provide cryptography and authentication mechanisms.
+2. The database is not automatically cleaned, it will grow indefinitely. To clean the database, use the command ```./clean.sh -v```.
 
-3. The database is not automatically cleaned, it will grow indefinitely. To clean the database, use the command ```./clean.sh -v```.
-
-4. The polling time of the Data Pump is set to 10 seconds, meaning that the data will be polled from Kafka and stored in the database every 10 seconds. The subscription to the Kafka topics timeout is set to 60 seconds, meaning that the Data Harvester will check the existing topics every 60 seconds and it will subscribe to them.
+3. The polling time of the Data Pump is set to 10 seconds, meaning that the data will be polled from Kafka and stored in the database every 10 seconds. The subscription to the Kafka topics timeout is set to 60 seconds, meaning that the Data Harvester will check the existing topics every 60 seconds and it will subscribe to them.
