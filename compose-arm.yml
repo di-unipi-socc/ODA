@@ -64,6 +64,7 @@ services:
   topicmanager:
     build:
       context: src/topic_manager
+      dockerfile: DockerfileARM
       args:
         TOPIC_MANAGER_PORT: ${topic_manager_port}
     container_name: topicmanager
