@@ -38,11 +38,11 @@ To run the ODA service with default configuration, follow these steps:
 
 ```./start.sh```
 
-4. Stop ODA:
+To stop ODA execute:
 
 ```./stop.sh```
 
-5. Remove ODA:
+To remove ODA execute:
 
 ```./clean.sh```    to remove the Docker images and the Docker network.
 ```./clean.sh -v``` to remove the Docker images, the Docker network and the db volumes (deleting all db data).
