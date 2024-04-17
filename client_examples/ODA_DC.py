@@ -1,10 +1,8 @@
 from confluent_kafka import Consumer, KafkaException
-import json,requests, logging, sys
+import json,requests, logging, sys, uuid
 from time import sleep
 from argparse import ArgumentParser
 
-#GROUP_INSTANCE_ID = 'consumer_group_instance' #EACH CONSUMER MUST HAVE A UNIQUE GROUP INSTANCE ID TO BE REMBERED BY KAFKA
-GROUP_ID = 'consumer_group' #TO RECEIVE ALL THE MESSAGE IT MUST BE ALONE IN THE GROUP
 AUTO_OFFSET_RESET = 'earliest' #TO RECEIVE ALL THE MESSAGE STORED IN KAFKA
 AUTO_COMMIT_INTERVAL_MS = '1000' #TO COMMIT THE OFFSET EVERY SECOND
 
@@ -17,14 +15,21 @@ parser.add_argument('topics', type=str, nargs='+', help='List of topic names to 
 parser.add_argument('--register', '-r', help='Set the Kafka endpoint if registered previously')
 parser.add_argument('--apigateway', '-a', help='Set the API Gateway URL', default="http://127.0.0.1:50005")
 parser.add_argument('--timeout', '-t', help='Set the polling timeout', default=1)
-parser.add_argument('--group_id', '-g', help='Set the group id', default=GROUP_ID)
-parser.add_argument('--group_instance_id', '-gi', help='Set the group instance id', default=None)
+parser.add_argument('--group_id', '-g', help='Kafka consumer group id', default=str(uuid.uuid4()))
+parser.add_argument('--group_instance_id', '-gi', help='Set the consumer static id', default=None)
 args = parser.parse_args()
 
 # Initialize variables from command-line arguments
 _topics = args.topics
 API_GATEWAY_URL = args.apigateway
 _TIMEOUT = int(args.timeout)
+GROUP_ID = args.group_id
+
+if args.group_instance_id:
+    GROUP_INSTANCE_ID = args.group_instance_id
+    logging.info(f"The consumer is static with id: {GROUP_INSTANCE_ID}")
+
+logging.info(f"The consumer group id is: {GROUP_ID}")
 
 # Check if the Kafka endpoint is provided as an argument otherwise register to the API Gateway
 if args.register:
@@ -59,9 +64,9 @@ else:
 logging.info("Initializing consumer...")
 c= Consumer({
     'bootstrap.servers': KAFKA_ENDPOINT,
-    'group.id': GROUP_ID,
-    'auto.offset.reset': AUTO_OFFSET_RESET,
-    'auto.commit.interval.ms': AUTO_COMMIT_INTERVAL_MS
+    'group.id': GROUP_ID
+    #'auto.offset.reset': AUTO_OFFSET_RESET,
+    #'auto.commit.interval.ms': AUTO_COMMIT_INTERVAL_MS
 })
 try:
     logging.info(f"Subscribing to topics {_topics}")

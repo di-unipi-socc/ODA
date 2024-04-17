@@ -17,7 +17,7 @@ parser.add_argument('--apigateway', '-a', help='Set the API Gateway URL, default
 parser.add_argument('--data', '-d', help='Set the data to send, default: generated randomly', default=None)
 parser.add_argument('--topic', '-tp', help='Set the topic of the data, default: generated randomly', default=None)
 parser.add_argument('--generator_id', '-g', help='Set the generator_id of the data, default: "generic_generator"', default="generic_generator")
-parser.add_argument('--timestamp', '-ts',  help='Set the timestamp of the data (format: YY-mm-ddThh:mm:ssZ), default "datetime.now"', default=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
+parser.add_argument('--timestamp', '-ts',  help='Set the timestamp of the data (format: YY-mm-ddThh:mm:ssZ), default "datetime.now"', default=None)
 #Topics to generate random data
 parser.add_argument('--topics', '-tps', type=str, nargs='*', help='List of topic names to subscribe to, default: "generic_topic"', default=["generic_topic"])
 parser.add_argument('--timeout', '-t', type=int, help='Set the sending packet in timeout in seconds, default: 0', default=0)
@@ -82,6 +82,8 @@ def generate_data():
 
 # Create a packet with the data to send
 def create_packet(timestamp, generator_id, topic, data):
+    if not timestamp:
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     packet = {
         "timestamp": timestamp,#ex: "2024-01-25T13:53:54Z"
         "generator_id": generator_id,
@@ -119,11 +121,6 @@ for i in range(1,n_msg+1):
     
     packet = create_packet(timestamp, generator_id, topic, data)
     toSend = json.dumps(packet,indent=4)
-    # Asynchronously produce a message. The delivery report callback will
-    # be triggered from the call to poll() above, or flush() below, when the
-    # message has been successfully delivered or failed permanently.
     logging.info(f'Sending message n {i}...')
     p.produce(packet["topic"], toSend.encode('utf-8'), callback=delivery_report)
-# Wait for any outstanding messages to be delivered and delivery report
-# callbacks to be triggered.
     p.flush()
