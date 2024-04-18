@@ -74,7 +74,8 @@ The data format of the data streamed or stored in ODA is JSON. The messages must
 
 To query the data stored in ODA, Data Consumers must send a query to the API Gateway. The query must include at least one of the following fields:
 
-``` "generator_id": string representing the ID of the generator,
+```
+    "generator_id": string representing the ID of the generator,
     "topic": a string representing the topic of the data requested,
     "start": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window start of the query,
     "end": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window end of the query.
