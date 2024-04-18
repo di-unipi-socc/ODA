@@ -49,10 +49,10 @@ To remove ODA execute:
 
 To update ODA (when this repo is updated):
 
-    1. Stop ODA (`./stop.sh`).
-    2. Remove the Docker images and the Docker network (`./clean.sh`).
+    1. Stop ODA with `./stop.sh`.
+    2. Remove the Docker images and the Docker network with `./clean.sh`.
     3. Pull the new version of the repository with `git pull`.
-    4. Start ODA (`./start.sh`).
+    4. Start ODA with `./start.sh`.
 
 ## API
 
@@ -85,10 +85,11 @@ The response will contain an archive ```.gzip``` containing the JSON representin
 
 Using the utility `curl` to send a query to the API Gateway (running on `host` at port `50005`):
 
-```curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{"topic":"generic_topic"}' --output results.gzip
+```
+curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{"topic":"generic_topic"}' --output results.gzip
 ```
 
-The query will return the data stored in the ODA database with topic `generic_topic` in a file named `results.gzip` containg a JSON file having the ODA data format. (NOTE: if the query does not return any data, the file will be empty and the HTTP response code will be 404).
+The query will return the data stored in the ODA database with the topic `generic_topic` in a file named `results.gzip` containing a JSON file having the ODA data format. (NOTE: if the query does not return any data, the file will be empty and the HTTP response code will be 404).
 
 ## Configuration
 
