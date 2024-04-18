@@ -1,0 +1,12 @@
+version: '3.3'
+name: oda
+
+services:
+  topicmanager:
+    build:
+      context: src/topic_manager
+      dockerfile: DockerfileARM
+  datapump:
+    build:
+      context: src/data_pump
+      dockerfile: DockerfileARM
