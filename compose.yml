@@ -12,6 +12,7 @@ services:
       ]
     ports:
     - "2181:2181"
+    restart: always
     environment:
       LOG_DIR: /tmp/logs
 
@@ -27,6 +28,7 @@ services:
     ports:
     - 9092:9092
     - ${kafka_port}:9094
+    restart: always
     environment:
       LOG_DIR: "/tmp/logs"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -45,6 +47,7 @@ services:
       - influxdbconfig:/etc/influxdb2:rw
     ports:
       - ${db_port}:8086
+    restart: always
 
   dbmanager:
     build: 
@@ -54,6 +57,7 @@ services:
     container_name: dbmanager
     ports:
       - ${db_manager_port}:${db_manager_port}
+    restart: always
     env_file:
       - influx.env
     environment: 
@@ -69,6 +73,7 @@ services:
     container_name: topicmanager
     ports:
       - ${topic_manager_port}:${topic_manager_port}
+    restart: always
     environment: 
       KAFKA_INTERNAL_PORT: ${kafka_internal_port}
     depends_on:
@@ -78,6 +83,7 @@ services:
   datapump:
     build: src/data_pump
     container_name: datapump
+    restart: always
     environment: 
       KAFKA_INTERNAL_PORT: ${kafka_internal_port}
       DB_MANAGER_PORT: ${db_manager_port}
@@ -93,6 +99,7 @@ services:
     container_name: apigateway
     ports:
       - ${api_gateway_port}:${api_gateway_port}
+    restart: always
     environment:
       API_GATEWAY_PORT: ${api_gateway_port}
       KAFKA_PORT: ${kafka_port}
