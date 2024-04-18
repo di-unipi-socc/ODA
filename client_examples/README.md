@@ -46,7 +46,7 @@ options:
   --timestamp TIMESTAMP, -ts TIMESTAMP
                         Set the timestamp of the data (format: YY-mm-ddThh:mm:ssZ), default "datetime.now"
   --topics [TOPICS ...], -tps [TOPICS ...]
-                        List of topic names to subscribe to, default: "generic_topic"
+                        List of topic names to generate random data, default: "generic_topic"
   --timeout TIMEOUT, -t TIMEOUT
                         Set the sending packet in timeout in seconds, default: 0
 ```

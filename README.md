@@ -47,6 +47,13 @@ To remove ODA execute:
 ```./clean.sh```    to remove the Docker images and the Docker network.
 ```./clean.sh -v``` to remove the Docker images, the Docker network and the db volumes (deleting all db data).
 
+To update ODA (when this repo is updated):
+
+    1. Stop ODA.
+    2. Remove the Docker images and the Docker network.
+    3. Pull the new version of the repository with `git pull`.
+    4. Start ODA.
+
 ## API
 
 Data Generators and Data Consumers can obtain the Kafka endpoint from the API Gateway.
@@ -72,7 +79,16 @@ To query the data stored in ODA, Data Consumers must send a query to the API Gat
     "end": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window end of the query.
 ```
 
-The response will contain a ```.gzip``` file containing the JSON representing the requested data.
+The response will contain an archive ```.gzip``` containing the JSON representing the requested data.
+
+### Query Example
+
+Using the utility `curl` to send a query to the API Gateway (running on `host` at port `50005`):
+
+```curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{"topic":"generic_topic"}' --output results.gzip
+```
+
+The query will return the data stored in the ODA database with topic `generic_topic` in a file named `results.gzip` containg a JSON file having the ODA data format. (NOTE: if the query does not return any data, the file will be empty and the HTTP response code will be 404).
 
 ## Configuration
 
@@ -83,14 +99,14 @@ The ODA service can be configured in two aspects:
 This configuration is achieved through environment variables, which are defined in the `.env` file located at the root directory of the repository. The `.env` file should include the following environment variables:
 
     - api_gateway_port: the port where the API Gateway will be listening.
+    - kafka_port: the port where the Kafka broker will be listening for an outside connection.
+    - kafka_address: the address of the Kafka broker.
     - db_port: the port where the InfluxDB will be listening.
     - db_manager_port: the port where the database manager will be listening.
-    - kafka_address: the address of the Kafka broker.
-    - kafka_port: the port where the Kafka broker will be listening for an outside connection.
     - kafka_internal_port: the port where the Kafka broker will be listening for internal connection.
     - k_admin_port: the port where the Kafka Admin will be listening.
 
-Only the ```api_gateway_port```, ```kafka_address``` and the ```kafka_port``` are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
+Only the ```api_gateway_port```, ```kafka_port``` and  the```kafka_address``` are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
 By default, we provide development configuration values (see ```.env``` file) to run ODA in localhost.
 
 2. The InfluxDB database configuration.

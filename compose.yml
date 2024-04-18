@@ -10,8 +10,6 @@ services:
         "sh", "-c",
         "bin/zookeeper-server-start.sh config/zookeeper.properties"
       ]
-    ports:
-    - "2181:2181"
     restart: always
     environment:
       LOG_DIR: /tmp/logs
@@ -26,7 +24,6 @@ services:
     depends_on:
     - zookeeper
     ports:
-    - 9092:9092
     - ${kafka_port}:9094
     restart: always
     environment:
@@ -45,8 +42,6 @@ services:
     volumes:
       - influxdbdata:/var/lib/influxdb2:rw
       - influxdbconfig:/etc/influxdb2:rw
-    ports:
-      - ${db_port}:8086
     restart: always
 
   dbmanager:
@@ -55,8 +50,6 @@ services:
       args:
         DB_MANAGER_PORT: ${db_manager_port}
     container_name: dbmanager
-    ports:
-      - ${db_manager_port}:${db_manager_port}
     restart: always
     env_file:
       - influx.env
@@ -71,8 +64,6 @@ services:
       args:
         TOPIC_MANAGER_PORT: ${topic_manager_port}
     container_name: topicmanager
-    ports:
-      - ${topic_manager_port}:${topic_manager_port}
     restart: always
     environment: 
       KAFKA_INTERNAL_PORT: ${kafka_internal_port}

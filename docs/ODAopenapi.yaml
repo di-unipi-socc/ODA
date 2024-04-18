@@ -141,5 +141,7 @@ paths:
                       type: string
                       description: ID of the event generator
                       example: "generic_generator"
+        '404':
+          description: No data found for the specified query
         '500':
           description: Internal server error

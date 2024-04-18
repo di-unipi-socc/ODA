@@ -19,7 +19,7 @@ parser.add_argument('--topic', '-tp', help='Set the topic of the data, default: 
 parser.add_argument('--generator_id', '-g', help='Set the generator_id of the data, default: "generic_generator"', default="generic_generator")
 parser.add_argument('--timestamp', '-ts',  help='Set the timestamp of the data (format: YY-mm-ddThh:mm:ssZ), default "datetime.now"', default=None)
 #Topics to generate random data
-parser.add_argument('--topics', '-tps', type=str, nargs='*', help='List of topic names to subscribe to, default: "generic_topic"', default=["generic_topic"])
+parser.add_argument('--topics', '-tps', type=str, nargs='*', help='List of topic names to generate random data, default: "generic_topic"', default=["generic_topic"])
 parser.add_argument('--timeout', '-t', type=int, help='Set the sending packet in timeout in seconds, default: 0', default=0)
 
 args = parser.parse_args()

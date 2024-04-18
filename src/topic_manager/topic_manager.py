@@ -11,6 +11,8 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 admin = AdminClient({'bootstrap.servers': KAFKA_URL})
 topics = list(admin.list_topics().topics.keys())
+if "__consumer_offsets" in topics:
+    topics.remove("__consumer_offsets")
 
 
 

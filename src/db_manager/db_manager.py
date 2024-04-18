@@ -81,7 +81,7 @@ def query():
         result = client.query_api().query(org=org, query=query)
         
         if not result:
-            return make_response("No data found", 404)
+            return make_response("", 404)
         result = extractResults(result)
 
         content = gzip.compress(json.dumps(result).encode('utf8'),mtime=0)

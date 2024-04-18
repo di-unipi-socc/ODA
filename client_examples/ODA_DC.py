@@ -64,9 +64,9 @@ else:
 logging.info("Initializing consumer...")
 c= Consumer({
     'bootstrap.servers': KAFKA_ENDPOINT,
-    'group.id': GROUP_ID
-    #'auto.offset.reset': AUTO_OFFSET_RESET,
-    #'auto.commit.interval.ms': AUTO_COMMIT_INTERVAL_MS
+    'group.id': GROUP_ID,
+    'auto.offset.reset': AUTO_OFFSET_RESET,
+    'auto.commit.interval.ms': AUTO_COMMIT_INTERVAL_MS
 })
 try:
     logging.info(f"Subscribing to topics {_topics}")
