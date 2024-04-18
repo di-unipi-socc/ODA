@@ -65,7 +65,8 @@ To send or receive streamed data, Data Generators and Data Consumers must use th
 
 The data format of the data streamed or stored in ODA is JSON. The messages must include the following fields:
 
-``` "timestamp": string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ,
+```
+    "timestamp": string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ (note: timestamps in ODA are in UTC time),
     "generator_id": a string representing the ID of the generator,
     "topic": a string representing the topic where the message will be sent,
     "data": a string representing the data of the message.
