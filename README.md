@@ -49,10 +49,10 @@ To remove ODA execute:
 
 To update ODA (when this repo is updated):
 
-    1. Stop ODA.
-    2. Remove the Docker images and the Docker network.
+    1. Stop ODA (`./stop.sh`).
+    2. Remove the Docker images and the Docker network (`./clean.sh`).
     3. Pull the new version of the repository with `git pull`.
-    4. Start ODA.
+    4. Start ODA (`./start.sh`).
 
 ## API
 
