@@ -2,4 +2,4 @@ Flask
 gevent
 gunicorn
 requests
-confluent-kafka
+confluent-kafka==2.4.0
