@@ -57,7 +57,7 @@ To update ODA (when this repo is updated):
 ## API
 
 Data Generators and Data Consumers can obtain the Kafka endpoint from the API Gateway.
-The API of the API Gateway is documented using [Swagger](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/alebocci/ODA/main/docs/ODAopenapi.yaml?token=GHSAT0AAAAAACQWB4U3NVESM5Z5L4VVUGKWZQ5ISEA).
+The API of the API Gateway is documented using [Swagger](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/alebocci/ODA/main/docs/ODAopenapi.yaml).
 
 Data Generators must send the list of topics they want to produce to the API Gateway. Data Consumers will obtain the list of available topics from the API Gateway.
 
