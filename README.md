@@ -14,6 +14,7 @@ The Observable Data Access (ODA) service is a microservice-based architecture th
 4. Kafka: the message broker - managed by Zookeeper - that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
 5. Data Pump: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
 6. Topic Manager: the microservice that manages the Kafka topics registered in ODA.
+7. Query Aggregator: the microservice that manages the aggregation of the data stored in ODA. It allows querying the data stored in ODA and receiving aggregated results.
 
 The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 
@@ -72,7 +73,9 @@ The data format of the data streamed or stored in ODA is JSON. The messages must
     "data": a string representing the data of the message.
 ```
 
-To query the data stored in ODA, Data Consumers must send a query to the API Gateway. The query must include at least one of the following fields:
+## Queries
+
+To query the data stored in ODA, Data Consumers must send a HTTP POST to the API Gateway at `http://<host>:50005/query`. The paload must be a JSON file including at least one of the following fields:
 
 ```
     "generator_id": string representing the ID of the generator,
@@ -83,7 +86,7 @@ To query the data stored in ODA, Data Consumers must send a query to the API Gat
 
 The response will contain an archive ```.gzip``` containing the JSON representing the requested data.
 
-### Query Example
+### Example
 
 Using the utility `curl` to send a query to the API Gateway (running on `host` at port `50005`):
 
@@ -92,6 +95,64 @@ curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{"
 ```
 
 The query will return the data stored in the ODA database with the topic `generic_topic` in a file named `results.gzip` containing a JSON file having the ODA data format. (NOTE: if the query does not return any data, the file will be empty and the HTTP response code will be 404).
+
+### Aggregated Queries
+
+It is possible to query the data stored in ODA and receive aggregated results by adding the `aggregator` field to your query JSON payload. The `aggregator` field must be an object specifying the aggregation parameters:
+
+```
+"aggregator": {
+    "fun": "sum" | "avg" | "min" | "max",   // Aggregation function (required)
+    "field": "<field_name>",                   // Name of the field to aggregate (required)
+    "unit": "<unit>"                           // Target unit for the result (required)
+    "frequency": <minutes>                      // (Optional) Aggregate in time buckets of this size (in minutes)
+}
+```
+
+- `fun`: Aggregation function. Supported values are `sum`, `avg`, `min`, `max`.
+- `field`: The name of the field inside the `data` object to aggregate (e.g., `power`, `temperature`).
+- `unit`: The unit you want the result in (e.g., `W`, `kW`, `Celsius`, `Kelvin`).
+- `frequency`: (Optional) If provided, the aggregation will be performed in time buckets of the given size (in minutes). If omitted, aggregation is performed over the entire result set.
+
+##### Supported Unit Conversions
+
+The aggregator supports automatic conversion between the following units:
+
+- Power: `W` (Watt) ↔ `kW` (Kilowatt)
+- Energy: `Wh` (Watt-hour) ↔ `kWh` (Kilowatt-hour)
+- Current: `A` (Ampere) ↔ `mA` (Milliampere)
+- Temperature: `Celsius` ↔ `Kelvin`
+
+Specify the desired target unit in the `unit` field. The service will convert values as needed before aggregation.
+
+#### Example: Aggregated Query (Total Power in kW)
+
+```
+curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{
+    "topic": "generic_topic",
+    "aggregator": {
+        "fun": "sum",
+        "field": "power",
+        "unit": "kW"
+    }
+}' --output results.gzip
+```
+
+#### Example: Aggregated Query with Frequency (Average Temperature per 60 Minutes)
+
+```
+curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{
+    "topic": "generic_topic",
+    "aggregator": {
+        "fun": "avg",
+        "field": "temperature",
+        "unit": "Celsius",
+        "frequency": 60
+    }
+}' --output results.gzip
+```
+
+The response will be a `.gzip` archive containing the aggregated results in JSON format.
 
 ## Configuration
 
@@ -108,6 +169,7 @@ This configuration is achieved through environment variables, which are defined 
     - db_manager_port: the port where the database manager will be listening.
     - kafka_internal_port: the port where the Kafka broker will be listening for internal connection.
     - k_admin_port: the port where the Kafka Admin will be listening.
+    - query_aggregator_port: the port where the Query Aggregator will be listening.
 
 Only the ```api_gateway_port```, ```kafka_port``` and  the```kafka_address``` are reachable from outside ODA. The other ports are only reachable from inside the Docker network.
 By default, we provide development configuration values (see ```.env``` file) to run ODA in localhost.

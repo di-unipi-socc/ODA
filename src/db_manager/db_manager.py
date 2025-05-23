@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response
 from datetime import datetime
 import influxdb_client, logging, sys, os, gzip, json, uuid
 from influxdb_client.client.write_api import SYNCHRONOUS
@@ -62,6 +62,7 @@ The response is an unsorted JSON array with all the records that match the query
 @app.route("/query", methods=["POST"]) 
 def query():
     try:
+        zipParameter = request.args.get('unzip', 'false').lower()
         msg = request.get_json()
         if not msg:
             return make_response("Empty query", 404)
@@ -83,13 +84,17 @@ def query():
         if not result:
             return make_response("", 404)
         result = extractResults(result)
+        if zipParameter == 'true':
+            app.logger.info('Not compressing response')
+            return make_response(json.dumps(result).encode('utf8'), 200)
+        else:
+            app.logger.info('Compressing response')
+            content = gzip.compress(json.dumps(result).encode('utf8'),mtime=0)
+            response = make_response(content)
+            response.headers['Content-length'] = len(content)
+            response.headers['Content-Encoding'] = 'gzip'
+            return response
 
-        content = gzip.compress(json.dumps(result).encode('utf8'),mtime=0)
-        response = make_response(content)
-        response.headers['Content-length'] = len(content)
-        response.headers['Content-Encoding'] = 'gzip'
-        return response
-        #return make_response(jsonify(result), 200)
     except Exception as e:
         app.logger.error(repr(e))
         return make_response(repr(e), 400)
@@ -101,7 +106,7 @@ def buildQuery(query,start,stop,topic,generator_id):
     else:
         start = "-10"
     if stop:
-        stop = str(sys.maxsize)
+        stop = datetime.strptime(stop, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M:%S.000Z")
     else:
         stop = datetime.strftime(datetime.now(),"%Y-%m-%dT%H:%M:%S.000Z")
     range = f'range(start: {start}, stop: {stop})'
@@ -121,6 +126,6 @@ def extractResults(result):
     results = []
     for table in result:
         for record in table.records:
-            time = record.get_time().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            time = record.get_time().strftime("%Y-%m-%dT%H:%M:%S.000Z").split('.')[0] + 'Z'
             results.append({"timestamp":time,"data":record.get_value(),"topic":record.values["topic"],"generator_id":record.values["generator_id"]})
     return results

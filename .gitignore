@@ -2,3 +2,6 @@
 *.gzip
 *Zone.Identifier
 .vscode
+**/venv/
+**/test/
+*bugfix.txt
