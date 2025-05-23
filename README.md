@@ -78,7 +78,7 @@ To query the data stored in ODA, Data Consumers must send a query to the API Gat
     "generator_id": string representing the ID of the generator,
     "topic": a string representing the topic of the data requested,
     "start": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window start of the query,
-    "end": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window end of the query.
+    "stop": a string formatted in ISO 8601 YYYY:MM:DDTHH:MM:SSZ representing the time window end of the query.
 ```
 
 The response will contain an archive ```.gzip``` containing the JSON representing the requested data.
