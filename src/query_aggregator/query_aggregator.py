@@ -45,15 +45,13 @@ def query():
         result = x.json()
         if not result:
             return make_response("No data found", 404)
-        aggr = create_aggregate_result(msg, result)
+        aggr = create_aggregated_result(msg, result)
         app.logger.info('Compressing response')
         content = gzip.compress(json.dumps(aggr).encode('utf8'),mtime=0)
         response = make_response(content)
         response.headers['Content-length'] = len(content)
         response.headers['Content-Encoding'] = 'gzip'       
         return response
-        
-        #return make_response(x.json(), 200)
     except HTTPError as e:
         app.logger.error(f'HTTP error occurred: {e.response.url} - {e.response.status_code} - {e.response.text}')
         return make_response(e.response.text, e.response.status_code)
@@ -62,9 +60,7 @@ def query():
         return make_response(repr(e), 500)
     
 #Aggregates the data based on the aggregation function
-
-
-def create_aggregate_result(msg, result):
+def create_aggregated_result(msg, result):
     start = msg.get("start", None)
     stop = msg.get("stop", None)
     topic = msg.get("topic", None)
@@ -107,12 +103,19 @@ def create_aggregate_result(msg, result):
         for item in items:    
             data_field = item.get("data")
             data = get_data_dict(data_field)
+            if not data or field not in data:
+                # Skip if data if empty or does not contain the field
+                continue
             attr = data.get(field, {})
+            if not attr:
+                # Skip if data if does not contain the field
+                continue
             val = attr.get("value")
             unit = attr.get("unit")
             conv_val = convert(val, unit, target_unit)
             if conv_val is not None:
                 values.append(conv_val)
+            # if value is not of the target unit and cannot be converted, skip it
         return values
 
     # Case 1: No frequency
