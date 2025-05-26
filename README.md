@@ -138,6 +138,21 @@ curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{
 }' --output results.gzip
 ```
 
+The response will be a `.gzip` archive containing a JSON file with the aggregated results for the topic `generic_topic`, with the `sum` of all the `power` fields and converting them in `kW`. For example:
+
+```json
+{
+    "timestamp": "2024-10-01T12:00:00Z",
+    "generator_id": null,
+    "topic": "generic_topic",
+    "data": {
+        "power": 5.0, \\ Sum of all power values in kW
+        "unit": "kW"
+    }
+}
+```
+
+
 #### Example: Aggregated Query with Frequency (Average Temperature per 60 Minutes)
 
 ```
@@ -152,7 +167,39 @@ curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{
 }' --output results.gzip
 ```
 
-The response will be a `.gzip` archive containing the aggregated results in JSON format.
+The response will be a `.gzip` archive containing a JSON file with aggregated results for the topic `generic_topic`. Each entry in the JSON represents a `60`-minute time window and includes the `average` of all `temperature` readings within that window. Temperatures are converted to `Celsius` before averaging. The timestamp for each object corresponds to the end of the respective 60-minute window.
+For example, considering three windows:
+
+```json
+{
+    "timestamp": "2024-10-01T12:00:00Z",
+    "generator_id": null,
+    "topic": "generic_topic",
+    "data": {
+        "temperature": 22.5, \\ Average temperature in Celsius of first 60 minutes
+        "unit": "Celsius"
+    }
+},
+{
+    "timestamp": "2024-10-01T13:00:00Z",
+    "generator_id": null,
+    "topic": "generic_topic",
+    "data": {
+        "temperature": 23.0, \\ Average temperature in Celsius of second 60 minutes
+        "unit": "Celsius"
+    }
+},
+{
+    "timestamp": "2024-10-01T14:00:00Z",
+    "generator_id": null,
+    "topic": "generic_topic",
+    "data": {
+        "temperature": 21.8, \\ Average temperature in Celsius of third 60 minutes
+        "unit": "Celsius"
+    }
+}
+
+```
 
 ## Configuration
 
