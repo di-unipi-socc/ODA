@@ -14,7 +14,7 @@ The Observable Data Access (ODA) service is a microservice-based architecture th
 4. Kafka: the message broker - managed by Zookeeper - that allows Data Generators to stream data through ODA and Data Consumers to receive streamed data through ODA.
 5. Data Pump: the microservice that subscribes to the Kafka topics and sends the data to be stored to the Database Manager.
 6. Topic Manager: the microservice that manages the Kafka topics registered in ODA.
-7. Query Aggregator: the microservice that manages the aggregation of the data stored in ODA. It allows querying the data stored in ODA and receiving aggregated results.
+7. Data Aggregator: the microservice that manages the aggregation of the data stored in ODA. It allows querying the data stored in ODA and receiving aggregated results.
 
 The [detailed overview](/docs/ODA.pdf) is available in the `docs` folder.
 
@@ -72,6 +72,8 @@ The data format of the data streamed or stored in ODA is JSON. The messages must
     "topic": a string representing the topic where the message will be sent,
     "data": a string representing the data of the message.
 ```
+
+The common used data format for the `data` field is the one proposed by POLIMI, please refer to the [POLIMI data format documentation](docs/ODA_UpTown_DataFormat.pdf) for more details.
 
 ## Queries
 
