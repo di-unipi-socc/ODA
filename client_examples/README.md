@@ -66,6 +66,15 @@ will register to the API Gateway with the topic `livingroom` and will send the m
 ### Example: sending generated messages
 
 ```python ODA_DG.py -n 10 -tps livingroom kitchen -g livingroom_termometer``` will register to the API Gateway with the topics `livingroom` and `kitchen` and will send 10 messages with random data to selecting randomly those two topics.
+```python ODA_DG.py -tp generic_topic -d "{\"temperature\":{\"unit\":\"Celsius\", \"value\": 20}, \"power\":{\"unit\": \"kW\", \"value\":50}}" -g livingroom_termometer``` will register to the API Gateway with the topic `generic_topic` and will send the message:
+
+```json
+"timestamp": <current time>,
+"generator_id": "livingroom_termometer",
+"topic": "generic_topic",
+"data": "{"temperature":{"unit":"Celsius", "value": 20}, "power":{"unit": "kW", "value":50}}"
+```
+
 
 ### Writing an ODA DG
 

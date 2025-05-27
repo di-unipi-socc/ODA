@@ -15,4 +15,4 @@ RUN pip3 install -r requirements.txt  --break-system-packages --no-cache-dir
 
 EXPOSE $QUERY_AGGREGATOR_PORT
 
-CMD gunicorn -k gevent --bind ${SERVER_PORT} query_aggregator:app --workers
+CMD gunicorn -k gevent --bind ${SERVER_PORT} query_aggregator:app

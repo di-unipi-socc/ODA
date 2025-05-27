@@ -167,7 +167,7 @@ curl -X POST http://host:50005/query  -H 'Content-Type: application/json' -d '{
 }' --output results.gzip
 ```
 
-The response will be a `.gzip` archive containing a JSON file with aggregated results for the topic `generic_topic`. Each entry in the JSON represents a `60`-minute time window and includes the `average` of all `temperature` readings within that window. Temperatures are converted to `Celsius` before averaging. The timestamp for each object corresponds to the end of the respective 60-minute window.
+The response will be a `.gzip` archive containing a JSON file with aggregated results for the topic `generic_topic`. Each entry in the JSON represents a `60`-minute time window and includes the `average` of all `temperature` readings within that window. Temperatures are converted to `Celsius` before averaging. The timestamp for each object corresponds to the end of the respective 60-minute window. Windows without data will not be included in the response.
 For example, considering three windows:
 
 ```json

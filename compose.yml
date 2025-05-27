@@ -34,7 +34,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
   influxdb:
-    image: influxdb:latest
+    image: influxdb:2.7
     container_name: influxdb
     env_file:
       - influx.env

@@ -30,8 +30,13 @@ def query():
         fun = msg["aggregator"].get("fun", None)
         field = msg["aggregator"].get("field", None)
         unit = msg["aggregator"].get("unit", None)
-        if fun is None or field is None or unit is None:
-            return make_response("Missing aggregation parameters", 400)
+        if fun is None:
+            return make_response('Missing aggregation function "fun"', 400)
+        if field is None:
+            return make_response('Missing aggregation field "field"', 400)
+        if unit is None:
+            return make_response('Missing aggregation unit "unit"', 400)
+        
         if fun not in agg_functions:
             raise make_response(f"Unsupported aggregation function: {fun}", 400)
         

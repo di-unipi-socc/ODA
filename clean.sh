@@ -21,7 +21,7 @@ if docker image ls | grep -q oda-apigateway; then
 fi
 
 if docker image ls | grep -q influxdb; then
-    docker image rm -f influxdb
+    docker image rm -f influxdb:2.7
 fi
 
 if docker image ls | grep -q alebocci/odakafka; then
