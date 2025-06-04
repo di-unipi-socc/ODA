@@ -66,6 +66,9 @@ services:
     restart: always
     environment: 
       KAFKA_INTERNAL_PORT: ${kafka_internal_port}
+      RESTORE_TOPICS: ${restore_topics_from_file}
+    volumes:
+      - topiclist:/app/topiclist:rw
     depends_on:
       - kafka
       - dbmanager
@@ -120,3 +123,4 @@ services:
 volumes:
   influxdbdata:
   influxdbconfig:
+  topiclist:
