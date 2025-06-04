@@ -2,3 +2,7 @@
 *.gzip
 *Zone.Identifier
 .vscode
+**/venv/
+**/test/
+**/docker_backups/
+*bugfix.txt
