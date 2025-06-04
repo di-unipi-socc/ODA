@@ -30,6 +30,8 @@ def write():
         writeDB(msg)
         return make_response("Data written to InfluxDB", 200)
     except Exception as e:
+        if msg:
+            app.logger.error('Error writing to DB with message: %s', msg)
         app.logger.error(repr(e))
         return make_response(repr(e), 400)
 
