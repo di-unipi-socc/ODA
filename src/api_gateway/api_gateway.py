@@ -4,10 +4,12 @@ from requests.exceptions import HTTPError
 
 #CONFIGURATION
 DB_MANAGER_PORT= os.environ["DB_MANAGER_PORT"]
+QUERY_AGGREGATOR_PORT= os.environ["QUERY_AGGREGATOR_PORT"]
 KAFKA_PORT= os.environ["KAFKA_PORT"]
 KAFKA_ADDRESS= os.environ["KAFKA_ADDRESS"]
 
 DB_MANAGER_URL = "http://dbmanager:"+DB_MANAGER_PORT
+QUERY_AGGREGATOR_URL = "http://queryaggregator:"+QUERY_AGGREGATOR_PORT
 KAFKA_URL = KAFKA_ADDRESS+":"+KAFKA_PORT
 
 TOPIC_MANAGER_PORT= os.environ["TOPIC_MANAGER_PORT"]
@@ -37,14 +39,18 @@ Each record has the following structure:
 def query():
     try:
         msg = request.get_json()
+        app.logger.info(f"Received query: {msg}")
         if not msg:
             return make_response("Empty query", 404)
-        URL= DB_MANAGER_URL + '/query'
+        if "aggregator" in msg:
+            URL = QUERY_AGGREGATOR_URL + '/query'
+        else:
+            URL= DB_MANAGER_URL + '/query'
         app.logger.info(f"Sending query to {URL}")
         app.logger.info(f"Query: {msg}")
         x = requests.post(URL, json=msg, stream=True)
         x.raise_for_status()
-        logging.info("Query sent to DB service")
+        logging.info("Query sent")
         resp = make_response(x.raw.read(), x.status_code, x.headers.items())
         return resp
         

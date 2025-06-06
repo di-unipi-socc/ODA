@@ -34,7 +34,7 @@ services:
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
 
   influxdb:
-    image: influxdb:latest
+    image: influxdb:2.7
     container_name: influxdb
     env_file:
       - influx.env
@@ -66,6 +66,9 @@ services:
     restart: always
     environment: 
       KAFKA_INTERNAL_PORT: ${kafka_internal_port}
+      RESTORE_TOPICS: ${restore_topics_from_file}
+    volumes:
+      - topiclist:/app/topiclist:rw
     depends_on:
       - kafka
       - dbmanager
@@ -81,6 +84,19 @@ services:
       - kafka
       - dbmanager
     
+  queryaggregator:
+    build: 
+      context: src/query_aggregator
+      args:
+        QUERY_AGGREGATOR_PORT: ${query_aggregator_port}
+    container_name: queryaggregator
+    restart: always
+    environment:
+      QUERY_AGGREGATOR_PORT: ${query_aggregator_port}
+      DB_MANAGER_PORT: ${db_manager_port}
+    depends_on:
+      - dbmanager
+
   apigateway:
     build: 
       context: src/api_gateway
@@ -95,12 +111,16 @@ services:
       KAFKA_PORT: ${kafka_port}
       KAFKA_ADDRESS: ${kafka_address}
       DB_MANAGER_PORT: ${db_manager_port}
+      QUERY_AGGREGATOR_PORT: ${query_aggregator_port}
       TOPIC_MANAGER_PORT: ${topic_manager_port}
     
     depends_on:
       - datapump
       - topicmanager
+      - queryaggregator
+      - dbmanager
 
 volumes:
   influxdbdata:
   influxdbconfig:
+  topiclist:
