@@ -42,7 +42,13 @@ def writeDB(msg):
     topic = msg["topic"]
     data = msg["data"]
     
-    dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    try:
+        # Try to parse with milliseconds
+        dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    except ValueError:
+        # If that fails, try parsing without milliseconds
+        dt = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    
     unixtimestamp = int(dt.timestamp())
     id = str(uuid.uuid4())
 
