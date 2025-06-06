@@ -109,7 +109,7 @@ def buildQuery(query,start,stop,topic,generator_id):
     else:
         start = "-10"
     if stop:
-        stop = str(sys.maxsize)
+        stop = datetime.strptime(stop, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M:%S.000Z")
     else:
         stop = datetime.strftime(datetime.now(),"%Y-%m-%dT%H:%M:%S.000Z")
     range = f'range(start: {start}, stop: {stop})'
