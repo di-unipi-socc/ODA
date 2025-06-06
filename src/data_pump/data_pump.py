@@ -18,7 +18,7 @@ AUTO_OFFSET_RESET = 'earliest' #TO RECEIVE ALL THE MESSAGE STORED IN KAFKA
 AUTO_COMMIT_INTERVAL_MS = '250' #COMMIT OFFSET INTERVAL (IN MILLISECONDS)
 
 #POLLING TIMEOUT
-_TIMEOUT = 1
+_TIMEOUT = 0.5 #SECONDS
 #SUBSCRIPTION TO ALL TOPICS TIMEOUT
 _SUBSCRIBE_TIMEOUT = 60
 
@@ -88,7 +88,7 @@ async def main():
         while True:
             await asyncio.sleep(_TIMEOUT)
             if sub_topics:
-                msg = c.poll(1.0)
+                msg = c.poll(0.5)
             if msg is None:
                 continue
             if msg.error():
