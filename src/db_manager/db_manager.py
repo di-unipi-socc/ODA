@@ -129,6 +129,6 @@ def extractResults(result):
     results = []
     for table in result:
         for record in table.records:
-            time = record.get_time().strftime("%Y-%m-%dT%H:%M:%S.000Z")
+            time = record.get_time().strftime("%Y-%m-%dT%H:%M:%SZ")
             results.append({"timestamp":time,"data":record.get_value(),"topic":record.values["topic"],"generator_id":record.values["generator_id"]})
     return results
