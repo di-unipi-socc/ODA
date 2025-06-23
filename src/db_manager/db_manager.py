@@ -99,6 +99,10 @@ def query():
         return response
         #return make_response(jsonify(result), 200)
     except Exception as e:
+        if isinstance(e, influxdb_client.exceptions.APIException):
+            if 'error in building plan while starting program: cannot query an empty range' in repr(e):
+                return make_response("No data in the time window.", 404)
+
         app.logger.error(repr(e))
         return make_response(repr(e), 400)
     
